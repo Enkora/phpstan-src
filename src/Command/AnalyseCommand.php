@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Throwable;
@@ -106,6 +107,18 @@ class AnalyseCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
+		if ($output instanceof ConsoleOutputInterface) {
+			$errorOutput = $output->getErrorOutput();
+			$errorOutput->writeln('');
+			$errorOutput->writeln("⚠️  You're running a dev-master alias of phpstan/phpstan.️");
+			$errorOutput->writeln('');
+			$errorOutput->writeln('This alias is no longer updated. It\'s recommended to switch');
+			$errorOutput->writeln('to stable releases by using the caret ^1.4 version range.');
+			$errorOutput->writeln('');
+			$errorOutput->writeln('See latest releases at:');
+			$errorOutput->writeln('<fg=cyan>https://github.com/phpstan/phpstan/releases</>');
+			$errorOutput->writeln('');
+		}
 		$paths = $input->getArgument('paths');
 		$memoryLimit = $input->getOption('memory-limit');
 		$autoloadFile = $input->getOption('autoload-file');
